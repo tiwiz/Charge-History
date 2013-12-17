@@ -5,4 +5,13 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Dropbox Dialog Strings -->
+    <string name="dropbox_dialog_title">Link Dropbox Account</string>
+    <string name="dropbox_dialog_message">In order to save your data, Charge History needs to connect to your Dropbox account.\n\nPlease, be aware that this software will not work without a Dropbox account.\n\nTap on "Yes" to connect your existing account or create a new one, otherwise pick "No" button and exit Charge History.</string>
+    <string name="dropbox_dialog_yes_button">Yes</string>
+    <string name="dropbox_dialog_no_button">No</string>
+    <!-- Dropbox Link Results -->
+    <string name="dropbox_link_ok">Signed in as %1$s</string>
+    <string name="dropbox_link_fail">Dropbox account could not be linked.</string>
+
 </resources>

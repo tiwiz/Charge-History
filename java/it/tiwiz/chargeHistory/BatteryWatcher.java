@@ -142,12 +142,15 @@ public class BatteryWatcher extends Service {
                         //syncronizes record
                         try {
                             dbxDatastore.sync();
+                            MyLog.d("Dropbox Sync requested");
                         } catch (DbxException e) {
                             /*do nothing*/
+                            MyLog.d("Dropbox Sync FAILED");
                         }finally {
                             //kills the service
                             Intent killServiceIntent = new Intent(context,BatteryWatcher.class);
                             stopService(killServiceIntent);
+                            MyLog.d("Service killed");
                         }
                     }
                 }else{

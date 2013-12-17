@@ -18,7 +18,7 @@ public class ChargeReceiver extends BroadcastReceiver {
 
         if(intentAction.equals(Intent.ACTION_POWER_CONNECTED)){
             //gets DbxAccountManager reference
-            DbxAccountManager dbxAccountManager = DbxAccountManager.getInstance(context,DropboxData.AppKey,DropboxData.AppSecret);
+            DbxAccountManager dbxAccountManager = DbxAccountManager.getInstance(context.getApplicationContext(),DropboxData.AppKey,DropboxData.AppSecret);
             //starts the service if and only if we already have Dropbox account linked
             if(dbxAccountManager.hasLinkedAccount())
                 context.startService(serviceIntent);
