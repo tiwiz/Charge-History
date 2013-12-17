@@ -7,8 +7,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+
+import com.dropbox.sync.android.DbxAccount;
+import com.dropbox.sync.android.DbxAccountManager;
+import com.dropbox.sync.android.DbxAuthActivity;
+import com.dropbox.sync.android.DbxDatastore;
+import com.dropbox.sync.android.DbxException;
+import com.dropbox.sync.android.DbxRecord;
+import com.dropbox.sync.android.DbxTable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,14 +27,21 @@ public class BatteryWatcher extends Service {
     private static final String INITIAL_PERCENTAGE_KEY = "initial_percentage";
     private static final String INITIAL_POWER_TYPE_KEY = "initial_power_type";
     private static final String INITIAL_TIME_KEY = "initial_time";
-    private static final String DATE_FORMAT = "HH:mm:ss";
+    private static final String TIME_FORMAT = "HH:mm:ss";
+    private static final String DAY_FORMAT = "d/M/y";
     private static final String TIMEZONE = "GMT";
+    private static final String DEVICE = Build.MANUFACTURER.toUpperCase() + " " + Build.MODEL;
+    private static final String VERSION = Build.VERSION.RELEASE;
 
     private static final int INITIAL_PERCENTAGE_DEFAULT_VALUE = -1;
     private static final int INITIAL_POWER_TYPE_DEFAULT_VALUE = -1;
     private static final int INITIAL_TIME_DEFAULT_VALUE = -1;
 
     private BatteryDetailsReceiver batteryReceiver = null;
+    private DbxAccountManager dbxAccountManager;
+    private DbxAccount dbxAccount;
+    private DbxDatastore dbxDatastore;
+    private DbxTable dbxTable;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -41,9 +57,23 @@ public class BatteryWatcher extends Service {
     public void onCreate(){
         super.onCreate();
 
-        batteryReceiver = new BatteryDetailsReceiver();
-        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        registerReceiver(batteryReceiver,filter);
+        //initializing of all Dropbox data - we assume the account is linked,
+        //otherwise the service would have not been started
+        dbxAccountManager = DbxAccountManager.getInstance(getApplicationContext(),DropboxData.AppKey,DropboxData.AppSecret);
+        dbxAccount = dbxAccountManager.getLinkedAccount();
+
+        try{
+            dbxDatastore = DbxDatastore.openDefault(dbxAccount);
+            dbxTable = dbxDatastore.getTable(Table.TableName);
+
+            batteryReceiver = new BatteryDetailsReceiver();
+            IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            registerReceiver(batteryReceiver,filter);
+        } catch (DbxException e) {
+            //Dropbox has crashed, the service kills itself
+            stopSelf();
+        }
+
 
     }
 
@@ -85,21 +115,40 @@ public class BatteryWatcher extends Service {
                         String chargeDuration = "N\\A";
                         if(initialPercentage != INITIAL_TIME_DEFAULT_VALUE){
                             currentTimeStamp = currentTimeStamp - initialTimeStamp;
-                            Date now = new Date();
-                            now.setTime(currentTimeStamp);
+                            Date nowTime = new Date();
+                            nowTime.setTime(currentTimeStamp);
                             //correctly formats time
-                            SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-                            sdf.setTimeZone(TimeZone.getTimeZone(TIMEZONE));
-                            chargeDuration = sdf.format(now);
+                            SimpleDateFormat timeSDF = new SimpleDateFormat(TIME_FORMAT);
+                            timeSDF.setTimeZone(TimeZone.getTimeZone(TIMEZONE));
+                            chargeDuration = timeSDF.format(nowTime);
                         }
 
                         //erases data
                         saveDataLocally(prefs, INITIAL_PERCENTAGE_DEFAULT_VALUE,
                                 INITIAL_POWER_TYPE_DEFAULT_VALUE, INITIAL_TIME_DEFAULT_VALUE);
 
-                        //kills the service
-                        Intent killServiceIntent = new Intent(context,BatteryWatcher.class);
-                        stopService(killServiceIntent);
+                        //gets today date
+                        Date nowDay = new Date();
+                        nowDay.setTime(System.currentTimeMillis());
+                        SimpleDateFormat daySDF = new SimpleDateFormat(DAY_FORMAT);
+                        //creates new record
+                        DbxRecord dbxRecord = dbxTable.insert();
+                        dbxRecord.set(Table.HElapsedChargedTime,chargeDuration);
+                        dbxRecord.set(Table.HDevice,DEVICE);
+                        dbxRecord.set(Table.HAndroidVersion,VERSION);
+                        dbxRecord.set(Table.HInitialPercentage,initialPercentage);
+                        dbxRecord.set(Table.HTypeOfCharge,pluggedStatus);
+                        dbxRecord.set(Table.HDate,daySDF.format(nowDay));
+                        //syncronizes record
+                        try {
+                            dbxDatastore.sync();
+                        } catch (DbxException e) {
+                            /*do nothing*/
+                        }finally {
+                            //kills the service
+                            Intent killServiceIntent = new Intent(context,BatteryWatcher.class);
+                            stopService(killServiceIntent);
+                        }
                     }
                 }else{
                     //if SharedPreferences are still empty
@@ -122,7 +171,6 @@ public class BatteryWatcher extends Service {
             editor.putInt(INITIAL_POWER_TYPE_KEY,pluggedStatus);
             editor.putLong(INITIAL_TIME_KEY,currentTimeStamp);
             editor.commit();
-            MyLog.d("Deletion complete");
         }
     }
 }
