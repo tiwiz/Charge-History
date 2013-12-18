@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content"
+	android:layout_width="match_parent">
+
+	<TextView
+		android:layout_height="32dp"
+		android:text="Nexus 5"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:layout_width="match_parent"
+		android:id="@+id/txtDeviceName"
+		android:gravity="center_vertical|center_horizontal"
+		android:layout_marginRight="64dp"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/device"/>
+
+	<ImageView
+		android:layout_height="64dp"
+		android:layout_width="64dp"
+		android:layout_alignParentRight="true"
+		android:id="@+id/imgChargeType"
+        android:background="@android:color/transparent"/>
+
+	<TextView
+		android:layout_height="32dp"
+		android:text="1:00:59"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_width="match_parent"
+		android:id="@+id/txtElapsedChargedTime"
+		android:layout_below="@id/txtDeviceName"
+		android:layout_marginRight="64dp"
+		android:gravity="center_vertical|center_horizontal"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/elapsed_time"/>
+
+	<TextView
+		android:layout_height="wrap_content"
+		android:text="4.4.2 - from 13% to 100% - 22/12/2013"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_width="match_parent"
+		android:layout_below="@id/txtElapsedChargedTime"
+		android:gravity="center_vertical|center_horizontal"
+		android:id="@+id/txtDetails"
+        android:background="@android:color/transparent"
+        android:drawableLeft="@drawable/android"
+        android:drawableRight="@drawable/date"/>
+
+</RelativeLayout>
+

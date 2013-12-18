@@ -32,7 +32,7 @@ public class BatteryHistoryActivity extends Activity {
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new DataListFragment(getApplicationContext()))
                     .commit();
         }
     }
@@ -58,21 +58,6 @@ public class BatteryHistoryActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_battery_history, container, false);
-            return rootView;
-        }
-    }
 
     private void checkDropboxLink(){
 
