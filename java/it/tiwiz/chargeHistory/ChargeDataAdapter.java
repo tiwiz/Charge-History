@@ -62,6 +62,16 @@ public class ChargeDataAdapter extends ArrayAdapter{
         }else
             holder = (ViewHolder) contentView.getTag(); //we retrieve the holder, so that we can fill it
 
+        //gets the needed data
+        final ChargerElement thisElement = mElements.get(position);
+        final String detailsString = mContext.getString(R.string.param_detail_string_sync_data, thisElement.getAndroidVersion(),thisElement.getStartPercentage(),thisElement.getDate());
+
+        //fills the fields in order to get a full element
+        holder.txtDeviceName.setText(thisElement.getDevice());
+        holder.txtElapsedChargedTime.setText(thisElement.getElapsedChargeTime());
+        holder.txtDetails.setText(detailsString);
+        holder.imgChargeType.setImageResource(thisElement.getChargeImageIconID());
+
         return contentView;
     }
 

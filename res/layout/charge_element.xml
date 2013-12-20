@@ -2,7 +2,9 @@
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_height="wrap_content"
-	android:layout_width="match_parent">
+	android:layout_width="match_parent"
+    android:background="@color/google_now_element_background"
+    android:padding="@dimen/elements_padding">
 
 	<TextView
 		android:layout_height="32dp"
@@ -13,6 +15,7 @@
 		android:gravity="center_vertical|center_horizontal"
 		android:layout_marginRight="64dp"
         android:background="@android:color/transparent"
+        android:textColor="@color/google_now_element_text_color"
         android:drawableLeft="@drawable/device"/>
 
 	<ImageView
@@ -32,7 +35,8 @@
 		android:layout_marginRight="64dp"
 		android:gravity="center_vertical|center_horizontal"
         android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/elapsed_time"/>
+        android:drawableLeft="@drawable/elapsed_time"
+        android:textColor="@color/google_now_element_text_color"/>
 
 	<TextView
 		android:layout_height="wrap_content"
@@ -44,7 +48,8 @@
 		android:id="@+id/txtDetails"
         android:background="@android:color/transparent"
         android:drawableLeft="@drawable/android"
-        android:drawableRight="@drawable/date"/>
+        android:drawableRight="@drawable/date"
+        android:textColor="@color/google_now_element_text_color"/>
 
 </RelativeLayout>
 

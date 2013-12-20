@@ -15,6 +15,6 @@
     <string name="dropbox_link_fail">Dropbox account could not be linked.</string>
 
     <!-- UI Strings -->
-    <string name="param_detail_string_sync_data">%1$s - from %2$s - %3$s</string>
+    <string name="param_detail_string_sync_data">%1$s - from %2$d - %3$s</string>
 
 </resources>

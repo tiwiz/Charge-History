@@ -142,6 +142,7 @@ public class BatteryWatcher extends Service {
                         //syncronizes record
                         try {
                             dbxDatastore.sync();
+                            dbxDatastore.close();
                             MyLog.d("Dropbox Sync requested");
                         } catch (DbxException e) {
                             /*do nothing*/
