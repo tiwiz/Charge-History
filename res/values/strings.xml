@@ -16,5 +16,6 @@
 
     <!-- UI Strings -->
     <string name="param_detail_string_sync_data">%1$s - from %2$d - %3$s</string>
+    <string name="action_refresh">Refresh</string>
 
 </resources>
